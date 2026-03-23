@@ -40,8 +40,14 @@ export class TransactionsService {
     endDate: string,
   ): Promise<TransactionInfo[]> {
     const start = new Date(startDate);
+    if (isNaN(start.getTime())) {
+      throw new BadRequestException('Invalid start date format');
+    }
     start.setHours(0, 0, 0, 0);
     const end = new Date(endDate);
+    if (isNaN(end.getTime())) {
+      throw new BadRequestException('Invalid end date format');
+    }
     end.setHours(23, 59, 59, 999);
     const today = new Date();
     today.setHours(23, 59, 59, 999);
