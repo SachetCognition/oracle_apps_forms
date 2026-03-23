@@ -8,6 +8,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
 import { TransactionService } from '../../../core/services/transaction.service';
 import { Transaction } from '../../../shared/models/transaction.model';
 
@@ -17,32 +18,34 @@ import { Transaction } from '../../../shared/models/transaction.model';
   imports: [
     CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule,
     MatDatepickerModule, MatNativeDateModule, MatButtonModule, MatCardModule,
-    MatTableModule,
+    MatTableModule, MatIconModule,
   ],
   template: `
     <div class="form-container">
       <mat-card>
-        <mat-card-header><mat-card-title>Transaction History</mat-card-title></mat-card-header>
+        <mat-card-header>
+          <mat-icon class="header-icon">history</mat-icon>
+          <mat-card-title>Transaction History</mat-card-title>
+          <mat-card-subtitle>View transactions within a date range</mat-card-subtitle>
+        </mat-card-header>
         <mat-card-content>
-          <form [formGroup]="form" (ngSubmit)="onSubmit()">
-            <div class="date-row">
-              <mat-form-field appearance="outline">
-                <mat-label>Start Date</mat-label>
-                <input matInput [matDatepicker]="startPicker" formControlName="startDate">
-                <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
-                <mat-datepicker #startPicker></mat-datepicker>
-              </mat-form-field>
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" class="search-form">
+            <mat-form-field appearance="outline" class="date-field">
+              <mat-label>Start Date</mat-label>
+              <input matInput [matDatepicker]="startPicker" formControlName="startDate">
+              <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+              <mat-datepicker #startPicker></mat-datepicker>
+            </mat-form-field>
 
-              <mat-form-field appearance="outline">
-                <mat-label>End Date</mat-label>
-                <input matInput [matDatepicker]="endPicker" formControlName="endDate">
-                <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
-                <mat-datepicker #endPicker></mat-datepicker>
-              </mat-form-field>
-            </div>
+            <mat-form-field appearance="outline" class="date-field">
+              <mat-label>End Date</mat-label>
+              <input matInput [matDatepicker]="endPicker" formControlName="endDate">
+              <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+              <mat-datepicker #endPicker></mat-datepicker>
+            </mat-form-field>
 
             <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
-              Search
+              <mat-icon>search</mat-icon> Search
             </button>
           </form>
 
@@ -57,7 +60,7 @@ import { Transaction } from '../../../shared/models/transaction.model';
             </ng-container>
             <ng-container matColumnDef="amount">
               <th mat-header-cell *matHeaderCellDef>Amount</th>
-              <td mat-cell *matCellDef="let t">{{ t.amount | number:'1.2-2' }}</td>
+              <td mat-cell *matCellDef="let t">&#8377; {{ t.amount | number:'1.2-2' }}</td>
             </ng-container>
             <ng-container matColumnDef="chequeNo">
               <th mat-header-cell *matHeaderCellDef>Cheque No</th>
@@ -65,24 +68,48 @@ import { Transaction } from '../../../shared/models/transaction.model';
             </ng-container>
             <ng-container matColumnDef="transactionType">
               <th mat-header-cell *matHeaderCellDef>Type</th>
-              <td mat-cell *matCellDef="let t">{{ t.transactionType }}</td>
+              <td mat-cell *matCellDef="let t">
+                <span class="type-badge" [class.credit]="t.transactionType === 'CR'" [class.debit]="t.transactionType === 'DR'">
+                  {{ t.transactionType }}
+                </span>
+              </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
 
-          <p *ngIf="searched && transactions.length === 0" class="no-data">No transactions found in the selected date range.</p>
+          <div *ngIf="searched && transactions.length === 0" class="no-data">
+            <mat-icon>inbox</mat-icon>
+            <p>No transactions found in the selected date range.</p>
+          </div>
         </mat-card-content>
       </mat-card>
     </div>
   `,
   styles: [`
-    .form-container { max-width: 700px; margin: 40px auto; padding: 0 20px; }
+    .form-container { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+    .header-icon { color: #607d8b; font-size: 28px; width: 28px; height: 28px; margin-right: 12px; }
+    mat-card-header { margin-bottom: 24px; }
     .full-width { width: 100%; }
-    .date-row { display: flex; gap: 16px; }
-    .date-row mat-form-field { flex: 1; }
+    .search-form { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+    .date-field { flex: 1; min-width: 180px; }
     table { margin-top: 24px; }
-    .no-data { text-align: center; color: #666; margin-top: 24px; }
+    .type-badge {
+      display: inline-block;
+      padding: 2px 12px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+    .credit { background: #e8f5e9; color: #2e7d32; }
+    .debit { background: #ffebee; color: #c62828; }
+    .no-data {
+      text-align: center;
+      padding: 40px 0;
+      color: #999;
+    }
+    .no-data mat-icon { font-size: 48px; width: 48px; height: 48px; color: #ccc; }
+    .no-data p { margin-top: 8px; }
   `],
 })
 export class TransactionHistoryComponent {

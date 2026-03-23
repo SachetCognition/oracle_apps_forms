@@ -19,7 +19,11 @@ import { AuthService } from '../../../core/services/auth.service';
   template: `
     <div class="form-container">
       <mat-card>
-        <mat-card-header><mat-card-title>Customer Login</mat-card-title></mat-card-header>
+        <mat-card-header>
+          <mat-icon class="header-icon">login</mat-icon>
+          <mat-card-title>Customer Login</mat-card-title>
+          <mat-card-subtitle>Sign in to access your account</mat-card-subtitle>
+        </mat-card-header>
         <mat-card-content>
           <form [formGroup]="form" (ngSubmit)="onSubmit()">
             <mat-form-field appearance="outline" class="full-width">
@@ -37,18 +41,25 @@ import { AuthService } from '../../../core/services/auth.service';
               <mat-error>Password is required</mat-error>
             </mat-form-field>
 
-            <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || submitting">
-              {{ submitting ? 'Logging in...' : 'Login' }}
-            </button>
+            <div class="submit-row">
+              <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || submitting">
+                <mat-icon>login</mat-icon>
+                {{ submitting ? 'Logging in...' : 'Login' }}
+              </button>
+            </div>
           </form>
         </mat-card-content>
       </mat-card>
     </div>
   `,
   styles: [`
-    .form-container { max-width: 450px; margin: 40px auto; padding: 0 20px; }
+    .form-container { max-width: 460px; margin: 0 auto; padding: 0 20px; }
+    .header-icon { color: #00bcd4; font-size: 28px; width: 28px; height: 28px; margin-right: 12px; }
+    mat-card-header { margin-bottom: 24px; }
     .full-width { width: 100%; }
-    form { display: flex; flex-direction: column; gap: 4px; }
+    form { display: flex; flex-direction: column; gap: 2px; }
+    .submit-row { display: flex; justify-content: flex-end; margin-top: 16px; }
+    .submit-row button mat-icon { margin-right: 8px; }
   `],
 })
 export class CustomerLoginComponent {
