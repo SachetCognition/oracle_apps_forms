@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
+import { Repository, DataSource, Like } from 'typeorm';
 import { AccountRequest } from '../entities/account-request.entity';
 import { RegisteredInfo } from '../entities/registered-info.entity';
 
@@ -50,17 +50,17 @@ export class AdminService {
       const namePrefix = request.firstName.substring(0, 3).toUpperCase();
       const prefix = accountTypePrefix + namePrefix;
 
-      // Find max sequence from existing account numbers with similar prefix
-      const existingAccounts = await queryRunner.manager.find(RegisteredInfo);
+      // Find max sequence from existing account numbers with matching prefix
+      const existingAccounts = await queryRunner.manager.find(RegisteredInfo, {
+        where: { accountNumber: Like(prefix + '%') },
+      });
       let maxSequence = 0;
       for (const acc of existingAccounts) {
-        // Extract numeric suffix from account number
-        const numericPart = acc.accountNumber.replace(/\D/g, '');
-        if (numericPart) {
-          const seq = parseInt(numericPart, 10);
-          if (seq > maxSequence) {
-            maxSequence = seq;
-          }
+        // Extract numeric suffix from account number after the prefix
+        const suffix = acc.accountNumber.substring(prefix.length);
+        const seq = parseInt(suffix, 10);
+        if (!isNaN(seq) && seq > maxSequence) {
+          maxSequence = seq;
         }
       }
 

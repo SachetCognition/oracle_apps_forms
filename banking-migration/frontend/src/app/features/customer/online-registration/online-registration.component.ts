@@ -86,6 +86,9 @@ export class OnlineRegistrationComponent {
       confirm.setErrors({ passwordMismatch: true });
       return { passwordMismatch: true };
     }
+    if (confirm?.hasError('passwordMismatch')) {
+      confirm.setErrors(null);
+    }
     return null;
   }
 
