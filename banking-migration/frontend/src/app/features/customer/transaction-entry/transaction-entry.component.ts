@@ -92,7 +92,7 @@ export class TransactionEntryComponent {
     this.form = this.fb.group({
       transactionType: ['', Validators.required],
       amount: ['', [Validators.required, Validators.min(1), Validators.max(9999999)]],
-      chequeNo: ['', [Validators.required, Validators.pattern(/^\\d{6}$/)]],
+      chequeNo: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
     });
   }
 

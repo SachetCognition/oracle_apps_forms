@@ -162,12 +162,12 @@ export class AccountOpeningComponent {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       dob: ['', Validators.required],
-      workPhone: ['', [Validators.required, Validators.pattern(/^\\d{10}$/)]],
-      homePhone: ['', [Validators.required, Validators.pattern(/^\\d{10}$/)]],
+      workPhone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
+      homePhone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
       address: ['', Validators.required],
       state: ['', Validators.required],
       zip: ['', Validators.required],
-      email: ['', [Validators.required, Validators.pattern(/^[^@]+@[^@]+\\.com$/)]],
+      email: ['', [Validators.required, Validators.pattern(/^[^@]+@[^@]+\.com$/)]],
     });
   }
 
