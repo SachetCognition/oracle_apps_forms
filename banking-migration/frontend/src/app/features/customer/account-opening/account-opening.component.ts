@@ -176,7 +176,10 @@ export class AccountOpeningComponent {
     this.submitting = true;
     const data = { ...this.form.value };
     if (data.dob instanceof Date) {
-      data.dob = data.dob.toISOString().split('T')[0];
+      const year = data.dob.getFullYear();
+      const month = String(data.dob.getMonth() + 1).padStart(2, '0');
+      const day = String(data.dob.getDate()).padStart(2, '0');
+      data.dob = `${year}-${month}-${day}`;
     }
     this.accountRequestService.create(data).subscribe({
       next: (res) => {
